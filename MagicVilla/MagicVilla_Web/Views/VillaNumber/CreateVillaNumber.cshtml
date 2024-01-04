@@ -1,0 +1,65 @@
+﻿@model MagicVilla_Web.Models.Dto.VillaNumberCreateDTO
+
+<form asp-action="CreateVillaNumber" enctype="multipart/form-data">
+    <br />
+    <div class="container border p-3">
+        <h1 class="text-primary">Create Villa Number</h1>
+        <hr />
+
+        <div class="row">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="col-2">
+                <label asp-for="VillaNo" class="control-label pt-2" style="font-size:20px;">Villa Number</label>
+            </div>
+            <div class="col-10 pb-3">
+                <input asp-for="VillaNo" class="form-control" />
+                <span asp-validation-for="VillaNo" class="text-danger"></span>
+            </div>
+
+           <!-- <div class="col-2">
+                <label asp-for="VillaID" class="control-label pt-2" style="font-size:20px;">Villa ID</label>
+            </div>
+            <div class="col-10 pb-3">
+                <input asp-for="VillaID" class="form-control" />
+                <span asp-validation-for="VillaID" class="text-danger"></span>
+             </div> -->
+
+            <div class="col-2">
+                  <label asp-for="VillaID" class="control-label pt-2" style="font-size:20px;">Villa ID DropDown</label> 
+                @* <label class="control-label pt-2" style="font-size:20px;">Villa ID DropDown</label>*@
+
+            </div>
+            <div class="col-10 pb-3">
+                @* <select asp-for="VillaID" asp-items="@(new SelectList(Model.VillaID))"  class="form-control"/> *@
+
+                @* @Html.DropDownList("MySkills", (IEnumerable <SelectListItem>) ViewData["datalist"] )*@
+                @*  <select asp-for="VillaID" id="datalist" name="datalist" asp-items="(IEnumerable<SelectListItem>)@ViewData["datalist"]"></select> *@
+                <select asp-for="VillaID" asp-items="(IEnumerable<SelectListItem>)@ViewData["datalist"]"></select>
+
+                  <span asp-validation-for="VillaID" class="text-danger"></span> 
+            </div>
+
+
+
+            <div class="col-2">
+                <label asp-for="SpecialDetails" class="control-label pt-2" style="font-size:20px;">Special Details</label>
+            </div>
+            <div class="col-10 pb-3">
+                <textarea asp-for="SpecialDetails" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="SpecialDetails" class="text-danger"></span>
+            </div>
+            <div class="col-5 offset-2">
+                <a asp-action="IndexVillaNumber" asp-controller="VillaNumber" class="btn-primary btn form-control ">Back to List</a>
+            </div>
+            <div class="col-5">
+                <input type="submit" value="Create" class="btn btn-success form-control" />
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -34,8 +34,8 @@ namespace MagicVilla_Web.Controllers
              return View(list);
         }
 
-
-		public async Task<IActionResult> CreateVilla()
+        //https://learn.microsoft.com/en-us/aspnet/mvc/overview/performance/using-asynchronous-methods-in-aspnet-mvc-4
+        public async Task<IActionResult> CreateVilla()
 		{
 			return View();
 		}
