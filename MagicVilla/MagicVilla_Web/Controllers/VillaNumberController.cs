@@ -81,6 +81,13 @@ namespace MagicVilla_Web.Controllers
         }
         public async Task<IActionResult> UpdateVillaNumber(int villaNumberId)
         {
+
+
+            var select_response = await _villaService.GetAllAsync<APIResponse>();
+            List<VillaDTO> list = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(select_response.Result));
+            var data = new SelectList(list, "Id", "Name");
+            ViewData["datalist"] = data;
+
             var response = await _villaNumberService.GetAsync<APIResponse>(villaNumberId);
             if (response != null && response.IsSuccess)
             {
@@ -97,6 +104,11 @@ namespace MagicVilla_Web.Controllers
         {
             if (ModelState.IsValid)
             {
+
+
+                var selectedIds = Request.Form["datalist"];
+                var number = model.VillaID;
+
                 var response = await _villaNumberService.UpdateAsync<APIResponse>(model);
                 if (response != null && response.IsSuccess)
                 {

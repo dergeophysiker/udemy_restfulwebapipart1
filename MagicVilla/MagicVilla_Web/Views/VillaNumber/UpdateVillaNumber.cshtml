@@ -10,7 +10,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="col-2">
-                <label asp-for="VillaNo" class="control-label pt-2" style="font-size:20px;"></label>
+                <label asp-for="VillaNo" class="control-label pt-2" style="font-size:20px;">Villa Number</label>
             </div>
             <div class="col-10 pb-3">
                 <input asp-for="VillaNo" class="form-control" />
@@ -18,11 +18,16 @@
             </div>
 
             <div class="col-2">
-                <label asp-for="VillaID" class="control-label pt-2" style="font-size:20px;"></label>
+                <label asp-for="VillaID" class="control-label pt-2" style="font-size:20px;">Villa ID DropDown</label>
             </div>
             <div class="col-10 pb-3">
-                <input asp-for="VillaID" class="form-control" />
+                @*  <input asp-for="VillaID" class="form-control" />
+                <span asp-validation-for="VillaID" class="text-danger"></span> *@
+                <select asp-for="VillaID" asp-items="(IEnumerable<SelectListItem>)@ViewData["datalist"]"></select>
+
                 <span asp-validation-for="VillaID" class="text-danger"></span>
+
+
             </div>
             
             <div class="col-2">
