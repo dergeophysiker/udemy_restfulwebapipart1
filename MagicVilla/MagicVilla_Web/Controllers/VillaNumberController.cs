@@ -79,12 +79,23 @@ namespace MagicVilla_Web.Controllers
 
                        return RedirectToAction(nameof(IndexVillaNumber));
                    }
-
+                    else
+                {
+                    if(response.ErrorMessages.Count > 0)
+                    {
+                        ModelState.AddModelError("ErrorMessages", response.ErrorMessages.FirstOrDefault());
+                    }
+                }
                     Console.WriteLine(response);
 
-               } 
+               }
 
-           return RedirectToAction(nameof(CreateVillaNumber));
+            var responseSelect = await _villaService.GetAllAsync<APIResponse>();
+            List<VillaDTO> list = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(responseSelect.Result));
+            model.VillaList = list.Select(i => new SelectListItem { Text = i.Name, Value = i.Id.ToString() });
+
+            return View(model);
+           //return RedirectToAction(nameof(CreateVillaNumber));
           //  return View(model);
         }
         public async Task<IActionResult> UpdateVillaNumber(int villaNumberId)
@@ -131,6 +142,8 @@ namespace MagicVilla_Web.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteVillaNumber(int villaNumberId)
         {
+            VillaNumberDeleteVM model = new();
+
             // var response = await _villaService.DeleteAsync<APIResponse>(villaId); // delte immediately 1/2
             var response = await _villaNumberService.GetAsync<APIResponse>(villaNumberId);
 
@@ -138,7 +151,9 @@ namespace MagicVilla_Web.Controllers
             {
                 //SendAsync
                 // return RedirectToAction(nameof(IndexVilla)); // delte immediately 2/2
-                VillaNumberDTO model = JsonConvert.DeserializeObject<VillaNumberDTO>(Convert.ToString(response.Result));
+                // VillaNumberDTO model = JsonConvert.DeserializeObject<VillaNumberDTO>(Convert.ToString(response.Result));
+                model.VillaNumber = JsonConvert.DeserializeObject<VillaNumberDTO>(Convert.ToString(response.Result));
+
                 return View(model);
 
             }
@@ -148,9 +163,9 @@ namespace MagicVilla_Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteVillaNumber(VillaNumberDTO model)
+        public async Task<IActionResult> DeleteVillaNumber(VillaNumberDeleteVM model)
         {
-            var response = await _villaNumberService.DeleteAsync<APIResponse>(model.VillaNo);
+            var response = await _villaNumberService.DeleteAsync<APIResponse>(model.VillaNumber.VillaNo);
             if (response != null && response.IsSuccess)
             {
                 //SendAsync
