@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MagicVilla_Web.Models;
 using MagicVilla_Web.Models.Dto;
+using MagicVilla_Web.Models.VM;
 using MagicVilla_Web.Services;
 using MagicVilla_Web.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
@@ -46,25 +47,32 @@ namespace MagicVilla_Web.Controllers
 
             var response = await _villaService.GetAllAsync<APIResponse>();
             List<VillaDTO>  list = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
-            var data = new SelectList(list, "Id", "Name");
-            ViewData["datalist"] = data;
 
-            return View();
+            /* view data approach 
+            var data = new SelectList(list, "Id", "Name");
+            ViewData["datalist"] = data; */
+
+            /* view model approach */
+            VillaNumberCreateVM villaNumberVM = new();
+            villaNumberVM.VillaList = list.Select(i => new SelectListItem { Text= i.Name, Value=i.Id.ToString() });
+
+            return View(villaNumberVM);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateVillaNumber(VillaNumberCreateDTO model)
+        // public async Task<IActionResult> CreateVillaNumber(VillaNumberCreateDTO model)
+        public async Task<IActionResult> CreateVillaNumber(VillaNumberCreateVM model)
         {
 
-                        var selectedIds = Request.Form["datalist"];
-                        var number = model.VillaID;
+            // var selectedIds = Request.Form["datalist"];
+                        var number = model.VillaNumber.VillaID;
 
                if (ModelState.IsValid)
                {
                  //  var responseObject = await _villaNumberService.CreateAsync<Object>(model);
                  //  var responseTest = await _villaNumberService.CreateAsync<APIResponse>(model);    
-                   var response = await _villaNumberService.CreateAsync<APIResponse>(model);
+                   var response = await _villaNumberService.CreateAsync<APIResponse>(model.VillaNumber);
 
                     if (response != null && response.IsSuccess)
                    {
