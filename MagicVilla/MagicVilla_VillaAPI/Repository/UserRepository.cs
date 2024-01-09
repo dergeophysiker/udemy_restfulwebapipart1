@@ -3,6 +3,7 @@ using MagicVilla_VillaAPI.Models;
 using MagicVilla_VillaAPI.Models.Dto;
 using MagicVilla_VillaAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace MagicVilla_VillaAPI.Repository
@@ -10,10 +11,12 @@ namespace MagicVilla_VillaAPI.Repository
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _db;
+        private string secretKey;
 
-        public UserRepository(ApplicationDbContext db)
+        public UserRepository(ApplicationDbContext db, IConfiguration configuration)
         {
             _db = db;
+            secretKey = configuration.GetValue<string>("ApiSettings:Secret");
         }
         public  bool IsUniqueUser(string username)
         {
