@@ -101,8 +101,11 @@ namespace MagicVilla_Web.Controllers
         public async Task<IActionResult> UpdateVillaNumber(int villaNumberId)
         {
 
-
+            VillaNumberUpdateVM modelVM = new VillaNumberUpdateVM();
             var select_response = await _villaService.GetAllAsync<APIResponse>();
+            
+            // does not use the VillaList in the view model, uses the view data object instead. Need to add logic.
+
             List<VillaDTO> list = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(select_response.Result));
             var data = new SelectList(list, "Id", "Name");
             ViewData["datalist"] = data;
@@ -112,29 +115,28 @@ namespace MagicVilla_Web.Controllers
             {
 
                 VillaNumberDTO model = JsonConvert.DeserializeObject<VillaNumberDTO>(Convert.ToString(response.Result));
-                return View(_mapper.Map<VillaNumberUpdateDTO>(model));
+                modelVM.VillaNumber = _mapper.Map<VillaNumberUpdateDTO>(model);
+                return View(modelVM);
             }
             return NotFound();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateVillaNumber(VillaNumberUpdateDTO model)
+        public async Task<IActionResult> UpdateVillaNumber(VillaNumberUpdateVM model)
         {
+            // does not properly reload the select dropdown if there is an error, need to add that logic
             if (ModelState.IsValid)
             {
-
-
                 var selectedIds = Request.Form["datalist"];
-                var number = model.VillaID;
+                var number = model.VillaNumber.VillaID;
 
-                var response = await _villaNumberService.UpdateAsync<APIResponse>(model);
+                var response = await _villaNumberService.UpdateAsync<APIResponse>(model.VillaNumber);
                 if (response != null && response.IsSuccess)
                 {
 
                     return RedirectToAction(nameof(IndexVillaNumber));
                 }
-
             }
 
             return View(model);

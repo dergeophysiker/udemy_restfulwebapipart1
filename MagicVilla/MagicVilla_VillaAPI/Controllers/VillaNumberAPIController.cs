@@ -6,6 +6,7 @@ using MagicVilla_VillaAPI.Models.Dto;
 using MagicVilla_VillaAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 using System.Net;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -206,9 +207,20 @@ namespace MagicVilla_VillaAPI.Controllers
                 ModelState.AddModelError("ErrorMessages", "VillaID is INVALID!");
                 return BadRequest(ModelState);
             }
-
+            // this needs better error handling on the return.
             VillaNumber model = _mapper.Map<VillaNumber>(updateDTO);
-            await _dbVillaNumber.UpdateAsync(model);
+            
+            try { 
+                object obj = await _dbVillaNumber.UpdateAsync(model);
+                Console.WriteLine(obj);
+            } 
+            catch (Exception ex) 
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            
+            
+            
             _response.StatusCode = HttpStatusCode.NoContent;
             _response.IsSuccess = true;
             return Ok(_response);
