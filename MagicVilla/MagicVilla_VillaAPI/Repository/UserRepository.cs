@@ -5,6 +5,10 @@ using MagicVilla_VillaAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace MagicVilla_VillaAPI.Repository
 {
@@ -38,13 +42,45 @@ namespace MagicVilla_VillaAPI.Repository
 
             if (user == null)
             {
-                return null;
+                LoginResponseDTO emptyloginResponseDTO = new LoginResponseDTO()
+                {
+                    Token = "",
+                    User = null
+                };
+
+                return emptyloginResponseDTO;
             }
 
             //if user was found generate JWT Token
 
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(secretKey);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, user.Id.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role.ToString()),
+
+                    }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            LoginResponseDTO loginResponseDTO = new LoginResponseDTO()
+            {
+                Token = tokenHandler.WriteToken(token),
+                User = user
+            };
 
 
+
+
+            return loginResponseDTO;
+
+          
         }
 
         public async Task<LocalUser> Register(RegistrationRequestDTO registrationRequestDTO)
