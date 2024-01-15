@@ -1,4 +1,5 @@
-﻿using MagicVilla_VillaAPI.Data;
+﻿using MagicVilla_Utility;
+using MagicVilla_VillaAPI.Data;
 using MagicVilla_VillaAPI.Models;
 using MagicVilla_VillaAPI.Models.Dto;
 using MagicVilla_VillaAPI.Repository.IRepository;
@@ -6,9 +7,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.CodeDom.Compiler;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+
 
 namespace MagicVilla_VillaAPI.Repository
 {
@@ -62,7 +65,7 @@ namespace MagicVilla_VillaAPI.Repository
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, user.Role.ToString()),
-
+                    //add more claims here
                     }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -93,8 +96,17 @@ namespace MagicVilla_VillaAPI.Repository
                 Role  = registrationRequestDTO.Role
             };
 
+            string hash = "blah blah";
+
+            string HashedPass = await Task.Run(() => GenerateSecret.HashPassword(hash));
+
+           //var HashedPass2 = await Task.Run((GenerateSecret.HashPassword(hash));
+
+            bool validateTrue = GenerateSecret.ValidatePassword(hash, HashedPass);
+
+
             _db.LocalUsers.Add(user);
-           await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
             user.Password = "";
             return user;
 

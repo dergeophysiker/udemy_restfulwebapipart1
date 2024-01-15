@@ -7,7 +7,7 @@ namespace MagicVilla_VillaAPI.Controllers
 {
     [Route("api/UsersAuth")]
     [ApiController]
-    public class UsersController : Controller
+    public class UsersController : Controller //allows views vs controllerbase
     {
         private readonly IUserRepository _userRepository;
         protected APIResponse _response;
