@@ -87,6 +87,8 @@ namespace MagicVilla_VillaAPI.Controllers
 
         //#################################################################### IGNORE
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("GetAllVillas")]
        public async Task<ActionResult<IEnumerable<VillaDTO>>> GetAllVillas()
         {
@@ -114,6 +116,10 @@ namespace MagicVilla_VillaAPI.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+
+        [Authorize(Roles = "admin")]
         //public async Task<ActionResult<VillaDTO>> GetVilla(int id)
 
 
@@ -157,6 +163,9 @@ namespace MagicVilla_VillaAPI.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]
+        [Authorize(Roles = "admin")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<VillaDTO>> CreateVilla([FromBody]VillaCreateDTO createDTO) {
             // he initially calls the argument villaDTO instead of createDTO which is confusing, he changes it later in the course
             // this never gets hit with [Apicontroller] is enabled
@@ -217,8 +226,11 @@ namespace MagicVilla_VillaAPI.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpDelete("{id:int}", Name="DeleteVilla")]
-       public async Task<ActionResult<APIResponse>> DeleteVilla(int id)
+        [Authorize(Roles = "CUSTOM")]
+        public async Task<ActionResult<APIResponse>> DeleteVilla(int id)
         {
             if(id==0)
             {
