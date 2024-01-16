@@ -6,5 +6,8 @@
         {
             GET,POST, PUT, DELETE
         }
+
+        public static string SessionTokenKeyName = "JWTToken";
+    
     }
 }

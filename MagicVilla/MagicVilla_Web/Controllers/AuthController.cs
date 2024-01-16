@@ -1,8 +1,12 @@
-﻿using MagicVilla_Web.Models;
+﻿using MagicVilla_Utility;
+using MagicVilla_Web.Models;
 using MagicVilla_Web.Models.Dto;
 
 using MagicVilla_Web.Services.IServices;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace MagicVilla_Web.Controllers
 {
@@ -18,14 +22,31 @@ namespace MagicVilla_Web.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            LoginRequestDTO obj = new LoginRequestDTO();
-            return View(obj);
+            LoginRequestDTO defaultLoginRequestDTO = new LoginRequestDTO();
+            return View(defaultLoginRequestDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginRequestDTO obj)
+        public async Task<IActionResult> Login(LoginRequestDTO postLoginRequestDTO)
         {
+            APIResponse response =  await _authService.LoginAsync<APIResponse>(postLoginRequestDTO);
+
+            if (response != null && response.IsSuccess)
+            {
+               // get response from login endpoint and deserialize, set session information and redirect
+                LoginResponseDTO loggedinLoginResponseDTO = JsonConvert.DeserializeObject<LoginResponseDTO>(Convert.ToString(response.Result));
+                HttpContext.Session.SetString(SD.SessionTokenKeyName, loggedinLoginResponseDTO.Token);
+                return RedirectToAction("Index","Home");
+            }
+            else
+            {
+                ModelState.AddModelError("Custom Error", response.ErrorMessages.FirstOrDefault());
+                return View(postLoginRequestDTO);
+            }
+
+
+
             return View();
         }
 
@@ -45,12 +66,21 @@ namespace MagicVilla_Web.Controllers
             {
                 return RedirectToAction("Login");
             }
+            // could add error handling
+
+
             return View();
         }
 
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
+
+
+            await HttpContext.SignOutAsync();
+            HttpContext.Session.SetString(SD.SessionTokenKeyName, "");
+            return RedirectToAction("Index", "Home");
+
             return View();
             
         }

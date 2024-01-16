@@ -24,6 +24,17 @@ namespace MagicVilla_Web
             builder.Services.AddScoped<IVillaNumberService, VillaNumberService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
 
+             //session related 
+             builder.Services.AddDistributedMemoryCache();
+             builder.Services.AddSession( options =>
+             {
+                 options.IdleTimeout = TimeSpan.FromMinutes(100);
+                 options.Cookie.HttpOnly = true;
+                 options.Cookie.IsEssential = true;
+             });
+            //end session related 
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -40,6 +51,10 @@ namespace MagicVilla_Web
             app.UseRouting();
 
             app.UseAuthorization();
+
+            //session related 
+            app.UseSession();
+            //end session related 
 
             app.MapControllerRoute(
                 name: "default",
