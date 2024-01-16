@@ -1,5 +1,6 @@
-﻿using MagicVilla_VillaAPI.Models.Dto;
-using MagicVilla_Web.Models;
+﻿using MagicVilla_Web.Models;
+using MagicVilla_Web.Models.Dto;
+
 using MagicVilla_Web.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 

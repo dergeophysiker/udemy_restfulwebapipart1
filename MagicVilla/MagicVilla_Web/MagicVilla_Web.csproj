@@ -14,7 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MagicVilla_Utility\MagicVilla_Utility.csproj" />
-    <ProjectReference Include="..\MagicVilla_VillaAPI\MagicVilla_VillaAPI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
