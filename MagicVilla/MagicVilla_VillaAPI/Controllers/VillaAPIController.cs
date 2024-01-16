@@ -50,9 +50,12 @@ namespace MagicVilla_VillaAPI.Controllers
         /// This gets all of the villas.
         /// </summary>
         /// <returns></returns>
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [HttpGet]
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpGet]
+ 
         public async Task<ActionResult<APIResponse>> GetVillas() {
 
             // DEFAULT LOGGER _logger.LogInformation("Getting all villas");
