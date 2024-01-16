@@ -24,6 +24,8 @@ namespace MagicVilla_Web
             builder.Services.AddScoped<IVillaNumberService, VillaNumberService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
 
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
              //session related 
              builder.Services.AddDistributedMemoryCache();
              builder.Services.AddSession( options =>
