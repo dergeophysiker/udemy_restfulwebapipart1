@@ -101,6 +101,8 @@ namespace MagicVilla_Web.Controllers
             // var response = await _villaService.DeleteAsync<APIResponse>(villaId); // delte immediately 1/2
             var response = await _villaService.GetAsync<APIResponse>(villaId);
 
+           
+
             if (response != null && response.IsSuccess)
             {
                 //SendAsync
@@ -132,6 +134,7 @@ namespace MagicVilla_Web.Controllers
             }
 
             TempData["deleted"] = "error on villa delete";
+            //change to return custom error page
             return NotFound();
         }
 

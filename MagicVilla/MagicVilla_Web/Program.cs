@@ -25,6 +25,9 @@ namespace MagicVilla_Web
             builder.Services.AddScoped<IVillaNumberService, VillaNumberService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
 
+
+          //  builder.Services.AddScoped<ITokenService,TokenService>(); //not used at this time
+           
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
              //session related 

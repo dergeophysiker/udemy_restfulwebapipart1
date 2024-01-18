@@ -7,6 +7,5 @@ namespace MagicVilla_Web.Services.IServices
         Task<T> LoginAsync<T>(LoginRequestDTO objToCreate);
         Task<T> RegisterAsync<T>(RegistrationRequestDTO objToCreate);
 
-
     }
 }

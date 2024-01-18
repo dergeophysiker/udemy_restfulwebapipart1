@@ -5,20 +5,28 @@ using MagicVilla_Web.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using MagicVilla_Utility;
+using Microsoft.AspNetCore.Http;
+
 
 namespace MagicVilla_Web.Controllers
 {
     public class HomeController : Controller
     {
-   
-		private readonly IVillaService _villaService;
+      
+        private readonly IVillaService _villaService;
 		private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-		public HomeController(IVillaService villaService, IMapper mapper)
+
+        public HomeController(IVillaService villaService, IMapper mapper, IHttpContextAccessor httpContextAccessor)
 		{
 			_villaService = villaService;
 			_mapper = mapper;
-		}
+            this._httpContextAccessor = httpContextAccessor;
+
+
+        }
 		public async Task<IActionResult> Index()
 		{
 			List<VillaDTO> list = new();
@@ -29,7 +37,19 @@ namespace MagicVilla_Web.Controllers
 
 				list = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
 			}
-
+			string value = "";
+            string sessionToken = "";
+            try
+			{
+				value = HttpContext.Session.GetString(SD.SessionTokenKeyName);
+                sessionToken = _httpContextAccessor.HttpContext.Session.GetString(SD.SessionTokenKeyName);
+            }
+			catch(Exception ex) 
+			
+			{
+			
+			}
+			
 			return View(list);
 		}
 

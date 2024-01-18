@@ -13,7 +13,7 @@ namespace MagicVilla_Web.Services
 
         private readonly IHttpClientFactory _clientFactory;
         private string villaUrl;
-        public VillaService(IHttpClientFactory clientFactory, IConfiguration configuration) : base(clientFactory)
+        public VillaService(IHttpClientFactory clientFactory, IConfiguration configuration, IHttpContextAccessor httpContextAccessor) : base(clientFactory, httpContextAccessor)
         {
             _clientFactory = clientFactory;
             villaUrl = configuration.GetValue<string>("ServiceUrls:VillaAPI");
@@ -27,6 +27,8 @@ namespace MagicVilla_Web.Services
                 ApiType = SD.ApiType.POST,
                 Data=dto,
                 Url= villaUrl+"/api/VillaAPI"
+         
+
             });
 
         }
@@ -37,6 +39,7 @@ namespace MagicVilla_Web.Services
             {
                 ApiType = SD.ApiType.DELETE,
                 Url = villaUrl + "/api/VillaAPI/" + id
+              
             });
         }
 
@@ -55,6 +58,7 @@ namespace MagicVilla_Web.Services
             {
                 ApiType = SD.ApiType.GET,
                 Url = villaUrl + "/api/VillaAPI/" + id
+
             });
         }
 

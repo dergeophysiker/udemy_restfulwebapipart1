@@ -3,6 +3,12 @@ using MagicVilla_Web.Models;
 using MagicVilla_Web.Services.IServices;
 using Newtonsoft.Json;
 using System.Text;
+using Microsoft.AspNetCore;
+using System.Linq.Expressions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace MagicVilla_Web.Services
 {
@@ -12,14 +18,30 @@ namespace MagicVilla_Web.Services
         public IHttpClientFactory httpClient { get; set; }
         public APIResponse responseModel { get; set; }
 
+        //public IHttpContextAccessor _httpContextAccessor;
+        public ITokenService _tokenService { get; set; }
 
-        public BaseService(IHttpClientFactory httpClient)
+         public IHttpContextAccessor _httpContextAccessor;
+
+
+        string sessionToken = "";
+
+        public BaseService(IHttpClientFactory httpClient, IHttpContextAccessor httpContextAccessor)
         {
             this.responseModel = new();
             this.httpClient = httpClient;
-
+            this._httpContextAccessor = httpContextAccessor;
+            //  this._tokenService = tokenService;
+            
+           
         }
 
+
+        public void About([FromServices] IHttpContextAccessor httpContextAccessor)
+        {
+            sessionToken = httpContextAccessor.HttpContext.Session.GetString(SD.SessionTokenKeyName);
+          
+        }
 
 
 
@@ -58,7 +80,43 @@ namespace MagicVilla_Web.Services
                 }
 
                 HttpResponseMessage apiResponseSend = null;
+
+                /* could possible add this in the constructor? */
+
+                // begin access httpcontext and find and set token if available
+               
+                try
+                {
+
+                    //sessionToken = this._tokenService.TokenValue;
+                    About(_httpContextAccessor);
+                    Console.Write(sessionToken);
+
+                    sessionToken = _httpContextAccessor.HttpContext.Session.GetString(SD.SessionTokenKeyName);
+                }
+           
+                catch(Exception e)
+                {
+                    Console.WriteLine(e);
+                }
                 
+
+
+                if(!string.IsNullOrEmpty(sessionToken))
+                {
+                    apiRequest.Token = sessionToken;
+                }
+                //end access
+
+
+                // begin add token to header
+
+                if (!string.IsNullOrEmpty(apiRequest.Token))
+                {
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiRequest.Token);
+                }
+                //end add token to header
+
                 apiResponseSend = await client.SendAsync(message);
                 var apiContent = await apiResponseSend.Content.ReadAsStringAsync();
 

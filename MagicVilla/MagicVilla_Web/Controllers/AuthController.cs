@@ -5,6 +5,7 @@ using MagicVilla_Web.Models.Dto;
 using MagicVilla_Web.Services.IServices;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ using System.Security.Claims;
 
 namespace MagicVilla_Web.Controllers
 {
+  //  [Authorize(Roles ="administrator")]
     public class AuthController : Controller
     {
         private readonly IAuthService _authService;
@@ -38,7 +40,9 @@ namespace MagicVilla_Web.Controllers
             {
                // get response from login endpoint and deserialize, set session information and redirect
                 LoginResponseDTO loggedinLoginResponseDTO = JsonConvert.DeserializeObject<LoginResponseDTO>(Convert.ToString(response.Result));
-                
+
+                //https://learn.microsoft.com/en-us/aspnet/core/security/authorization/roles?view=aspnetcore-7.0
+
                 //this ensures httpContext knows the user is "logged in"
                 var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
                 identity.AddClaim(new Claim(ClaimTypes.Name, loggedinLoginResponseDTO.User.Name));
