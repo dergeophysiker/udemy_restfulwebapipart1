@@ -110,6 +110,26 @@ builder.Services.AddSwaggerGen( options => {
         }
 
     });
+    options.SwaggerDoc("v2", new OpenApiInfo
+    {
+        Version = "v2.0",
+        Title = "Magic Villa",
+        Description = "Brendans API to manage villa",
+        TermsOfService = new Uri("https://www.google.com"),
+        Contact = new OpenApiContact
+        {
+            Name = "Best Project",
+            Url = new Uri("https://www.bing.com")
+        },
+        License = new OpenApiLicense
+        {
+            Name = "Best Project License",
+            Url = new Uri("https://www.microsoft.com")
+        }
+
+    });
+
+
 
 }    
     );
@@ -151,6 +171,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(options => {
         options.SwaggerEndpoint("/swagger/v1/swagger.json","Magic_VillaV1");
+        options.SwaggerEndpoint("/swagger/v2/swagger.json", "Magic_VillaV2");
+
     });
 
     //https://localhost:7001/swagger/v1/swagger.json
