@@ -34,7 +34,36 @@ builder.Services.AddControllers(option=>
     option.ReturnHttpNotAcceptable = false;
 }).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
+
+
+//builder.Services.AddEndpointsApiExplorer(); // probably only needed for minimal apis
+
+/*
+builder.Services.AddApiVersioning(options => {
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+    options.DefaultApiVersion = new Asp.Versioning.ApiVersion(2, 0);
+});
+sdfsdaf
+*/
+
+builder.Services.AddApiVersioning(options =>
+{
+
+    options.ReportApiVersions = true;
+    options.UnsupportedApiVersionStatusCode = 404; ///;// (StatusCodes.Status404NotFound);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new Asp.Versioning.ApiVersion(1, 0);
+})
+    .AddMvc()
+    .AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+
+});
+
+
 builder.Services.AddSwaggerGen( options => {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -73,10 +102,7 @@ builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<IVillaRepository, VillaRepository>();
 builder.Services.AddScoped<IVillaNumberRepository, VillaNumberRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddApiVersioning(options => {
-    options.AssumeDefaultVersionWhenUnspecified = true;
-    options.DefaultApiVersion = new Asp.Versioning.ApiVersion(1, 0);
-});
+
 
 var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
 

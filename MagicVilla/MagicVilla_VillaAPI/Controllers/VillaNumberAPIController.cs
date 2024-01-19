@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Asp.Versioning;
+using AutoMapper;
 using MagicVilla_VillaAPI.Data;
 using MagicVilla_VillaAPI.Logging;
 using MagicVilla_VillaAPI.Models;
@@ -14,8 +15,11 @@ using System.Net;
 namespace MagicVilla_VillaAPI.Controllers
 {
     //    [Route("api/[controller]")]
-    [Route("api/VillaNumberAPI")]
+    [Route("api/v{version:apiVersion}/VillaNumberAPI")]
     [ApiController]
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
+
     public class VillaNumberAPIController : ControllerBase
     {
 
@@ -38,10 +42,29 @@ namespace MagicVilla_VillaAPI.Controllers
 
         }
 
+
+
+      
+        [HttpGet]
+        [MapToApiVersion("2.0")]
+        public IEnumerable<string> Get()
+        {
+            return new string[] { "value1", "value2" };
+        }
+
+
+
+
+
+
+
+
+
         //####################################################################
         // GET: api/<VillaNumberAPIController>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet]
+        [MapToApiVersion("1.0")]
         public async Task<ActionResult<APIResponse>> GetVillaNumbers()
         {
             // DEFAULT LOGGER _logger.LogInformation("Getting all villaNumberss");

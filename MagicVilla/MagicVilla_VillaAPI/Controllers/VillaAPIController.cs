@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Asp.Versioning;
+using AutoMapper;
 using MagicVilla_VillaAPI.Data;
 using MagicVilla_VillaAPI.Logging;
 using MagicVilla_VillaAPI.Models;
@@ -16,9 +17,10 @@ using System.Reflection.Metadata.Ecma335;
 namespace MagicVilla_VillaAPI.Controllers
 {
 
-    [Route("api/VillaAPI")]
+    [Route("api/v{version:apiVersion}/VillaAPI")]
     [ApiController]
-   // No [ApiController] then must check model state in the code, if apicontrollor is enalbed, then it will hit the actions after modelstate is valid
+    [ApiVersion("1.0")]
+    // No [ApiController] then must check model state in the code, if apicontrollor is enalbed, then it will hit the actions after modelstate is valid
 
     public class VillaAPIController : ControllerBase
     {

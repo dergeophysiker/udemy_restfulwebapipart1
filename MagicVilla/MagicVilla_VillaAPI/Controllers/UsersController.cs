@@ -1,12 +1,15 @@
-﻿using MagicVilla_VillaAPI.Models;
+﻿using Asp.Versioning;
+using MagicVilla_VillaAPI.Models;
 using MagicVilla_VillaAPI.Models.Dto;
 using MagicVilla_VillaAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagicVilla_VillaAPI.Controllers
 {
-    [Route("api/UsersAuth")]
+    [Route("api/v{version:apiVersion}/UsersAuth")]
     [ApiController]
+    [ApiVersion("1.0")]
+
     public class UsersController : Controller //allows views vs controllerbase
     {
         private readonly IUserRepository _userRepository;
