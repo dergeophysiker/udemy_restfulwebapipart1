@@ -50,7 +50,7 @@ namespace MagicVilla_VillaAPI.Controllers
         /// This gets all of the villas.
         /// </summary>
         /// <returns></returns>
-        [Authorize]
+        //[Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
