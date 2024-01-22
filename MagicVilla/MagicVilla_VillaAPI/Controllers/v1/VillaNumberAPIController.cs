@@ -18,6 +18,9 @@ namespace MagicVilla_VillaAPI.Controllers.v1
     [Route("api/v{version:apiVersion}/VillaNumberAPI")]
     [ApiController]
     [ApiVersion("1.0")]
+    [ApiVersion("1.0", Deprecated =true)]
+
+
     //[ApiVersion("2.0")]
 
 
@@ -44,15 +47,14 @@ namespace MagicVilla_VillaAPI.Controllers.v1
         }
 
 
-
-        /*
-        [HttpGet]
-        [MapToApiVersion("2.0")]
-        public IEnumerable<string> Get()
+        
+        [HttpGet("GetStringZ")]
+         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value2" };
+            return new string[] { "value1v1", "value2v1" };
         }
-        */
+        
+
 
         //####################################################################
         // GET: api/<VillaNumberAPIController>
