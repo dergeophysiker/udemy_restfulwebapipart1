@@ -12,7 +12,7 @@ using System.Net;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace MagicVilla_VillaAPI.Controllers
+namespace MagicVilla_VillaAPI.Controllers.v1
 {
     //    [Route("api/[controller]")]
     [Route("api/v{version:apiVersion}/VillaNumberAPI")]

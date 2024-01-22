@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Reflection.Metadata.Ecma335;
 
-namespace MagicVilla_VillaAPI.Controllers
+namespace MagicVilla_VillaAPI.Controllers.v1
 {
 
     [Route("api/v{version:apiVersion}/VillaAPI")]
@@ -37,13 +37,13 @@ namespace MagicVilla_VillaAPI.Controllers
         protected APIResponse _response;
 
         //could remove applicationdbcontext
-        public VillaAPIController(ILogging logger, ApplicationDbContext db, IMapper mapper, IVillaRepository dbVilla) 
+        public VillaAPIController(ILogging logger, ApplicationDbContext db, IMapper mapper, IVillaRepository dbVilla)
         {
             _logger = logger;
             _db = db;
             _mapper = mapper;
             _dbVilla = dbVilla;
-            this._response = new APIResponse();
+            _response = new APIResponse();
 
         }
 
@@ -57,11 +57,12 @@ namespace MagicVilla_VillaAPI.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet]
- 
-        public async Task<ActionResult<APIResponse>> GetVillas() {
+
+        public async Task<ActionResult<APIResponse>> GetVillas()
+        {
 
             // DEFAULT LOGGER _logger.LogInformation("Getting all villas");
-            _logger.Log("custom getting all villas","");
+            _logger.Log("custom getting all villas", "");
 
             //https://www.linkedin.com/pulse/difference-between-ienumerable-ilist-list-iqueryable-pawan-verma/
 
@@ -84,9 +85,9 @@ namespace MagicVilla_VillaAPI.Controllers
 
 
 
-            
-            //return Ok(villaList); this is a list of Villa types which has not been mapped.
-        
+
+        //return Ok(villaList); this is a list of Villa types which has not been mapped.
+
         //////////////////////////////////////////////////////////////////////
 
 
@@ -95,7 +96,7 @@ namespace MagicVilla_VillaAPI.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("GetAllVillas")]
-       public async Task<ActionResult<IEnumerable<VillaDTO>>> GetAllVillas()
+        public async Task<ActionResult<IEnumerable<VillaDTO>>> GetAllVillas()
         {
 
             // DEFAULT LOGGER _logger.LogInformation("Getting all villas");
@@ -114,7 +115,7 @@ namespace MagicVilla_VillaAPI.Controllers
         }
         //####################################################################
 
-        
+
         //####################################################################
         [HttpGet("{id:int}", Name = "GetVilla")]
         // [ProducesResponseType(200,Type=typeof(VillaDTO))]
@@ -130,18 +131,18 @@ namespace MagicVilla_VillaAPI.Controllers
 
         public async Task<ActionResult<APIResponse>> GetVilla(int id)
         {
-        if(id == 0)
+            if (id == 0)
             {
                 //DEFAULT LOGGER    _logger.LogError("Get villa error with id" + id);
-               _logger.Log("Custom get villa error with id" + id,"error");
+                _logger.Log("Custom get villa error with id" + id, "error");
                 _response.StatusCode = HttpStatusCode.BadRequest;
 
                 return BadRequest(_response);
             }
             //var villa = VillaStore.villaList.FirstOrDefault(u => u.Id == id); // no database version
             //var villa =await _db.Villas.FirstOrDefaultAsync(u => u.Id == id); // no repository class version
-             //// these are the IVillRepository calls
-            var villa = await _dbVilla.GetAsync((u => u.Id == id));
+            //// these are the IVillRepository calls
+            var villa = await _dbVilla.GetAsync(u => u.Id == id);
             //var villa = await _dbVilla.GetOne($"u => u.Id == {id}"); //not a good approach because it would require building your own database access
             // return Redirect("Home/Contact");
 
@@ -171,7 +172,8 @@ namespace MagicVilla_VillaAPI.Controllers
         [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<VillaDTO>> CreateVilla([FromBody]VillaCreateDTO createDTO) {
+        public async Task<ActionResult<VillaDTO>> CreateVilla([FromBody] VillaCreateDTO createDTO)
+        {
             // he initially calls the argument villaDTO instead of createDTO which is confusing, he changes it later in the course
             // this never gets hit with [Apicontroller] is enabled
             if (!ModelState.IsValid) //necessary if apiControllor is not included or if needing custom state
@@ -180,7 +182,7 @@ namespace MagicVilla_VillaAPI.Controllers
             }
             //if(VillaStore.villaList.FirstOrDefault(u => u.Name.ToLower() == villaDTO.Name.ToLower()) != null ) //no database version
             //            if (await _db.Villas.FirstOrDefaultAsync(u => u.Name.ToLower() == createDTO.Name.ToLower()) != null ) // no repository version
-            if (await  _dbVilla.GetAsync(u => u.Name.ToLower() == createDTO.Name.ToLower()) != null )
+            if (await _dbVilla.GetAsync(u => u.Name.ToLower() == createDTO.Name.ToLower()) != null)
             {
                 ModelState.AddModelError("ErrorMessages", "villa already exists");
                 return BadRequest(ModelState);
@@ -233,17 +235,17 @@ namespace MagicVilla_VillaAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [HttpDelete("{id:int}", Name="DeleteVilla")]
+        [HttpDelete("{id:int}", Name = "DeleteVilla")]
         [Authorize(Roles = "CUSTOM")]
         public async Task<ActionResult<APIResponse>> DeleteVilla(int id)
         {
-            if(id==0)
+            if (id == 0)
             {
                 return BadRequest();
             }
             // var villa = VillaStore.villaList.FirstOrDefault(u => u.Id == id); //no database logic
             // var villa = await _db.Villas.FirstOrDefaultAsync(u => u.Id == id); //no repo logic
-            var villa = await _dbVilla.GetAsync(u =>u.Id == id);
+            var villa = await _dbVilla.GetAsync(u => u.Id == id);
             if (villa == null)
             {
                 return NotFound();
@@ -257,7 +259,7 @@ namespace MagicVilla_VillaAPI.Controllers
             return Ok(_response);
         }
         //####################################################################
-        
+
         //////////////////////////////////////////////////////////////////////
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -291,30 +293,30 @@ namespace MagicVilla_VillaAPI.Controllers
                 Sqft = updateDTO.Sqft
             };*/ // only needed if not using mapper
 
-           // _db.Villas.Update(model);// non-repo version 1/2
+            // _db.Villas.Update(model);// non-repo version 1/2
             // await _db.SaveChangesAsync(); // non-repo version 2/2
             await _dbVilla.UpdateAsync(model);
             _response.StatusCode = HttpStatusCode.NoContent;
             _response.IsSuccess = true;
             return Ok(_response);
         }
-    
-    //////////////////////////////////////////////////////////////////////
 
-    //####################################################################
-    [HttpPatch("{id:int}", Name = "UpdatePartialVilla")]
+        //////////////////////////////////////////////////////////////////////
+
+        //####################################################################
+        [HttpPatch("{id:int}", Name = "UpdatePartialVilla")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdatePartialVilla(int id, JsonPatchDocument<VillaUpdateDTO> patchDTO)
         {
-            if (patchDTO == null || id==0)
+            if (patchDTO == null || id == 0)
             {
                 return BadRequest();
             }
             // var villa = VillaStore.villaList.FirstOrDefault(u => u.Id == id); // non-db non EF framework version
             // var villa = _db.Villas.AsNoTracking().FirstOrDefault(u => u.Id == id); //non async EF version
             // var villa = await _db.Villas.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);  // ALT1 non repo version
-            var villa = await _dbVilla.GetAsync(u => u.Id == id,tracked:false);
+            var villa = await _dbVilla.GetAsync(u => u.Id == id, tracked: false);
             VillaUpdateDTO villaDto = _mapper.Map<VillaUpdateDTO>(villa);
             // replace commented code below with mapper above
             /*VillaUpdateDTO villaDto = new()
@@ -334,7 +336,7 @@ namespace MagicVilla_VillaAPI.Controllers
             }
             // patchDTO.ApplyTo(villa, ModelState); on used for no eneity frameowrk version
             patchDTO.ApplyTo(villaDto, ModelState);
-            Villa  model= _mapper.Map<Villa>(villaDto);
+            Villa model = _mapper.Map<Villa>(villaDto);
             // replace commented code below with mapper above
 
             /*

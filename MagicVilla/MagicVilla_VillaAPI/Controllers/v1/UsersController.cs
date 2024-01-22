@@ -4,7 +4,7 @@ using MagicVilla_VillaAPI.Models.Dto;
 using MagicVilla_VillaAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MagicVilla_VillaAPI.Controllers
+namespace MagicVilla_VillaAPI.Controllers.v1
 {
     [Route("api/v{version:apiVersion}/UsersAuth")]
     [ApiController]
@@ -18,7 +18,7 @@ namespace MagicVilla_VillaAPI.Controllers
         public UsersController(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            this._response = new APIResponse();
+            _response = new APIResponse();
         }
 
         [HttpPost("login")]
@@ -32,7 +32,7 @@ namespace MagicVilla_VillaAPI.Controllers
                 _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
                 _response.ErrorMessages.Add("Username or password is incorrect");
-              
+
                 return BadRequest(_response);
             }
 
@@ -48,8 +48,8 @@ namespace MagicVilla_VillaAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegistrationRequestDTO model)
         {
-            
-            bool ifUserNameUnique= _userRepository.IsUniqueUser(model.UserName);
+
+            bool ifUserNameUnique = _userRepository.IsUniqueUser(model.UserName);
             if (!ifUserNameUnique)
             {
                 _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
@@ -57,10 +57,10 @@ namespace MagicVilla_VillaAPI.Controllers
                 _response.ErrorMessages.Add("Username already exists.");
                 return BadRequest(_response);
             }
-            
+
             var user = await _userRepository.Register(model);
 
-            if(user == null)
+            if (user == null)
             {
                 _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
