@@ -8,6 +8,7 @@
         }
 
         public static string SessionTokenKeyName = "JWTToken";
+        public static string TargetApiVersion = "v1";
     
     }
 }
