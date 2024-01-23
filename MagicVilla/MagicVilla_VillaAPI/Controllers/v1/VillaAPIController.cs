@@ -61,7 +61,7 @@ namespace MagicVilla_VillaAPI.Controllers.v1
 
         [HttpGet]
 
-        public async Task<ActionResult<APIResponse>> GetVillas([FromQuery(Name = "FilterOccupancy")]int? occupancy)
+        public async Task<ActionResult<APIResponse>> GetVillas([FromQuery(Name = "FilterOccupancy")]int? occupancy, [FromQuery(Name = "Search")] string? search)
         {
 
             // DEFAULT LOGGER _logger.LogInformation("Getting all villas");
@@ -81,7 +81,15 @@ namespace MagicVilla_VillaAPI.Controllers.v1
                     villaList = await _dbVilla.GetAllAsync();
 
                 }
-               // IEnumerable<Villa> villaList = await _dbVilla.GetAllAsync();
+                if (!string.IsNullOrEmpty(search))
+                {
+                    //villaList = villaList.Where(u => u.Amenity.ToLower().Contains(search) || u.Name.ToLower().Contains(search));
+                    villaList = villaList.Where(u => u.Name.ToLower().Contains(search));
+
+                }
+
+
+                // IEnumerable<Villa> villaList = await _dbVilla.GetAllAsync();
                 _response.Result = _mapper.Map<List<VillaDTO>>(villaList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
