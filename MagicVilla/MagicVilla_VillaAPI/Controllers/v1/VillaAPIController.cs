@@ -56,7 +56,9 @@ namespace MagicVilla_VillaAPI.Controllers.v1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ResponseCache(Duration =30)]
+        //[ResponseCache(Duration =30)]
+        [ResponseCache(CacheProfileName="Default30")]
+
         [HttpGet]
 
         public async Task<ActionResult<APIResponse>> GetVillas()
