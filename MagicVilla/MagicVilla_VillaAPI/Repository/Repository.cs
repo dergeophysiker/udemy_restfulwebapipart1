@@ -43,6 +43,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             }
 
+
             if(includeProperties != null)
             {
                 foreach(var property in includeProperties.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries)) 
@@ -56,7 +57,7 @@ namespace MagicVilla_VillaAPI.Repository
         }
 
         //https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/expression-trees/
-        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
+        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null, int pageSize = 3, int pageNumber = 1)
         {
 
             IQueryable<T> query = dbSet;
@@ -66,13 +67,29 @@ namespace MagicVilla_VillaAPI.Repository
                 query = query.Where(filter);
 
             }
-			if (includeProperties != null)
+            if (pageSize > 0)
+            {
+                if (pageSize > 100)
+                {
+                    pageSize = 100;
+                }
+                // if pagesize is 5 and page number is 1
+                // 5(1-1)  = 0 skip | so take is 5   ---  skip0.take(5)
+                // 5(2-1) ----skip5.take5
+
+                query = query.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
+
+
+            }
+            if (includeProperties != null)
 			{
 				foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
 				{
 					query = query.Include(property);
 				}
 			}
+
+
 
 			return await query.ToListAsync();
         }

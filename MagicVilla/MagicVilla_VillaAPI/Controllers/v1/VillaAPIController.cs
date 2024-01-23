@@ -61,7 +61,8 @@ namespace MagicVilla_VillaAPI.Controllers.v1
 
         [HttpGet]
 
-        public async Task<ActionResult<APIResponse>> GetVillas([FromQuery(Name = "FilterOccupancy")]int? occupancy, [FromQuery(Name = "Search")] string? search)
+        public async Task<ActionResult<APIResponse>> GetVillas([FromQuery(Name = "FilterOccupancy")]int? occupancy, 
+            [FromQuery(Name = "Search")] string? search, int pageSize = 2, int pageNumber = 1)
         {
 
             // DEFAULT LOGGER _logger.LogInformation("Getting all villas");
@@ -74,11 +75,11 @@ namespace MagicVilla_VillaAPI.Controllers.v1
             {
                 if(occupancy > 0)
                 {
-                     villaList = await _dbVilla.GetAllAsync(u=>u.Occupancy == occupancy);
+                     villaList = await _dbVilla.GetAllAsync(u=>u.Occupancy == occupancy, pageSize:pageSize, pageNumber:pageNumber);
                 }
                 else
                 {
-                    villaList = await _dbVilla.GetAllAsync();
+                    villaList = await _dbVilla.GetAllAsync(pageSize: pageSize, pageNumber: pageNumber);
 
                 }
                 if (!string.IsNullOrEmpty(search))
