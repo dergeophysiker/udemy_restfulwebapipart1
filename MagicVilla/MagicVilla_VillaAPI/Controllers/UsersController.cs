@@ -28,7 +28,9 @@ namespace MagicVilla_VillaAPI.Controllers
 
             var LoginResponse = await _userRepository.Login(model);
 
-            if (LoginResponse.User == null || string.IsNullOrEmpty(LoginResponse.Token))
+            // if (LoginResponse.User == null || string.IsNullOrEmpty(LoginResponse.Token))
+             if (LoginResponse.AspnetUser == null || string.IsNullOrEmpty(LoginResponse.Token)) // changed due to aspnet identity management 
+
             {
                 _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
