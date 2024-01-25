@@ -25,22 +25,25 @@ namespace MagicVilla_VillaAPI.Repository
 
         //used by ASPNET Identity
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
 
-        public UserRepository(ApplicationDbContext db, IConfiguration configuration, UserManager<ApplicationUser> userManager, IMapper mapper)
+        public UserRepository(ApplicationDbContext db, IConfiguration configuration, UserManager<ApplicationUser> userManager,
+            IMapper mapper, RoleManager<IdentityRole> roleManager)
         {
             _db = db;
             _userManager = userManager;  // added for ASPNET Identity
+            _roleManager = roleManager; // added for ASPNET Identity
             _mapper = mapper;
             secretKey = configuration.GetValue<string>("ApiSettings:Secret");
 
         }
-        public  bool IsUniqueUser(string username)
+        public bool IsUniqueUser(string username)
         {
             //could make this async
 
             // var user =  _db.LocalUsers.FirstOrDefault(x => x.UserName == username);
-             var user =  _db.ApplicationUsers.FirstOrDefault(x => x.UserName == username);  // using ASPNET identity instead of home brew
+            var user = _db.ApplicationUsers.FirstOrDefault(x => x.UserName == username);  // using ASPNET identity instead of home brew
 
             if (user == null)
             {
@@ -52,7 +55,7 @@ namespace MagicVilla_VillaAPI.Repository
         public async Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO)
         {
 
-        //var  user = _db.LocalUsers.FirstOrDefault(u=>u.UserName == loginRequestDTO.UserName && u.Password==loginRequestDTO.Password);
+            //var  user = _db.LocalUsers.FirstOrDefault(u=>u.UserName == loginRequestDTO.UserName && u.Password==loginRequestDTO.Password);
 
             // first retrieve user in identity
             var user = _db.ApplicationUsers.FirstOrDefault(u => u.UserName.ToLower() == loginRequestDTO.UserName); //// added for ASPNET Identity
@@ -114,8 +117,8 @@ namespace MagicVilla_VillaAPI.Repository
 
         }
 
-       // public async Task<LocalUser> Register(RegistrationRequestDTO registrationRequestDTO) // new return type for aspnet identity
-       public async Task<UserDTO> Register(RegistrationRequestDTO registrationRequestDTO)
+        // public async Task<LocalUser> Register(RegistrationRequestDTO registrationRequestDTO) // new return type for aspnet identity
+        public async Task<UserDTO> Register(RegistrationRequestDTO registrationRequestDTO)
 
         {
             /*  //code pre aspnet identity mgmt
@@ -138,12 +141,21 @@ namespace MagicVilla_VillaAPI.Repository
 
             try
             {
-                var result = await _userManager.CreateAsync(registerUser,registrationRequestDTO.Password);
+                var result = await _userManager.CreateAsync(registerUser, registrationRequestDTO.Password);
                 if (result.Succeeded)
                 {
+                    bool adminRoleExists = await _roleManager.RoleExistsAsync("admin");
+
+                    if (!adminRoleExists)
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole("admin"));
+                        await _roleManager.CreateAsync(new IdentityRole("user"));
+                        await _roleManager.CreateAsync(new IdentityRole("CUSTOM"));
+                    }
                     await _userManager.AddToRoleAsync(registerUser, "admin");
 
-                    var userToReturn = _db.ApplicationUsers.FirstOrDefaultAsync(u=> u.UserName == registrationRequestDTO.UserName);
+                    var userToReturn = await _db.ApplicationUsers.FirstOrDefaultAsync(u => u.UserName == registrationRequestDTO.UserName);
+                   // var userToReturn = await _db.ApplicationUsers.FirstOrDefaultAsync(u => u.UserName == registerUser.UserName);
 
                     /* //do not need if using automapper
                     return new UserDTO()
@@ -153,14 +165,15 @@ namespace MagicVilla_VillaAPI.Repository
                         ID = userToReturn.Result.Id
                     };*/
 
-
-                    return _mapper.Map<UserDTO>(userToReturn);
+                    UserDTO newUser = _mapper.Map<UserDTO>(userToReturn);
+                    return newUser;
 
                 }
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine(ex.ToString());
+                return new UserDTO();
             }
 
             /* //code pre aspnet identity mgmt
