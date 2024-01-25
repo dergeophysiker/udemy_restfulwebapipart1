@@ -7,7 +7,8 @@ namespace MagicVilla_VillaAPI.Repository.IRepository
     {
         bool IsUniqueUser(string username);
         Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO);
-        Task<LocalUser> Register(RegistrationRequestDTO registrationRequestDTO);
+        //  Task<LocalUser> Register(RegistrationRequestDTO registrationRequestDTO); // changed due to using aspnet identity
+        Task<UserDTO> Register(RegistrationRequestDTO registrationRequestDTO);
 
 
 

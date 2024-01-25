@@ -111,11 +111,14 @@ namespace MagicVilla_VillaAPI.Repository
 
             return loginResponseDTO;
 
-          
+
         }
 
-        public async Task<LocalUser> Register(RegistrationRequestDTO registrationRequestDTO)
+       // public async Task<LocalUser> Register(RegistrationRequestDTO registrationRequestDTO) // new return type for aspnet identity
+       public async Task<UserDTO> Register(RegistrationRequestDTO registrationRequestDTO)
+
         {
+            /*  //code pre aspnet identity mgmt
             LocalUser user = new()
             {
                 UserName = registrationRequestDTO.UserName,
@@ -123,7 +126,44 @@ namespace MagicVilla_VillaAPI.Repository
                 Password = registrationRequestDTO.Password,
                 Role  = registrationRequestDTO.Role
             };
+            */
 
+            ApplicationUser registerUser = new()
+            {
+                UserName = registrationRequestDTO.UserName,
+                Name = registrationRequestDTO.Name,
+                Email = registrationRequestDTO.UserName,
+                NormalizedEmail = registrationRequestDTO.UserName.ToUpper()
+            };
+
+            try
+            {
+                var result = await _userManager.CreateAsync(registerUser,registrationRequestDTO.Password);
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(registerUser, "admin");
+
+                    var userToReturn = _db.ApplicationUsers.FirstOrDefaultAsync(u=> u.UserName == registrationRequestDTO.UserName);
+
+                    /* //do not need if using automapper
+                    return new UserDTO()
+                    {
+                        UserName = userToReturn.Result.UserName,
+                        Name = userToReturn.Result.Name,
+                        ID = userToReturn.Result.Id
+                    };*/
+
+
+                    return _mapper.Map<UserDTO>(userToReturn);
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            /* //code pre aspnet identity mgmt
             string hash = "blah blah";
 
             string HashedPass = await Task.Run(() => GenerateSecret.HashPassword(hash));
@@ -131,14 +171,16 @@ namespace MagicVilla_VillaAPI.Repository
            //var HashedPass2 = await Task.Run((GenerateSecret.HashPassword(hash));
 
             bool validateTrue = GenerateSecret.ValidatePassword(hash, HashedPass);
+            */
 
-
+            /* //code pre aspnet identity mgmt
             _db.LocalUsers.Add(user);
             await _db.SaveChangesAsync();
             user.Password = "";
             return user;
+               */
 
-
+            return new UserDTO();
 
         }
     }
