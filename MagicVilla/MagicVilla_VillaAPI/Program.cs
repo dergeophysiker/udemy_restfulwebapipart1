@@ -189,11 +189,12 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    // all of this needs to be moved outside of IsDevelopment for deployment.
     app.UseSwagger();
     app.UseSwaggerUI(options => {
         options.SwaggerEndpoint("/swagger/v1/swagger.json","Magic_VillaV1");
         options.SwaggerEndpoint("/swagger/v2/swagger.json","Magic_VillaV2");
-
+       // options.RoutePrefix = String.Empty; //only use if NOT in development 
     });
 
     //https://localhost:7001/swagger/v1/swagger.json
