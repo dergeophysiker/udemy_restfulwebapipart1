@@ -89,7 +89,9 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.UserName.ToString()),
+
                  //   new Claim(ClaimTypes.Role, user.Role.ToString()),  //deprecated localuser homebrew
                     new Claim(ClaimTypes.Role, roles.FirstOrDefault()), //added for identity assume only 1 role per user else need for each loop to assign
                    
